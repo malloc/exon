@@ -31,5 +31,25 @@
   <welcome-file-list>
     <welcome-file>Exon.html</welcome-file>
   </welcome-file-list>
+  
+  <!-- Session settings -->
+  <session-config>
+    <session-timeout>1</session-timeout> 
+  </session-config>
+  
+  <!-- Listeners -->
+  <listener>
+    <description>SessionListener</description>
+    <listener-class>
+        org.marczuk.server.SessionListener
+    </listener-class>
+  </listener>
+
+  <listener>
+    <description>ContexListener</description>
+    <listener-class>
+        org.marczuk.server.ContexListener
+    </listener-class>
+  </listener>
 
 </web-app>
