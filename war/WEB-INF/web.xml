@@ -15,7 +15,18 @@
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/exon/greet</url-pattern>
   </servlet-mapping>
+ 
+ <!-- File upload servlet -->
+  <servlet>
+    <servlet-name>fileUploaderServlet</servlet-name>
+    <servlet-class>org.marczuk.server.FilesUploader</servlet-class>
+  </servlet>
   
+  <servlet-mapping>
+    <servlet-name>fileUploaderServlet</servlet-name>
+    <url-pattern>/filesuploader</url-pattern>
+  </servlet-mapping>
+ 
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>Exon.html</welcome-file>
