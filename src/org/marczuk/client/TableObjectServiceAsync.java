@@ -8,7 +8,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface TableObjectServiceAsync {
 
-	void getServerMessage(AsyncCallback<String> callback);
-
-	void aminoList(AsyncCallback<List<AminoAcid>> callback);
+	void getAminoAcidList(AsyncCallback<List<AminoAcid>> callback);
 }
