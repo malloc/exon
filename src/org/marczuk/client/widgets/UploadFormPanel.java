@@ -21,9 +21,17 @@ public class UploadFormPanel extends FormPanel {
 
 	   this.setWidget(verticalPanel);
 	   
-	   FileUpload fileUpload = new FileUpload();
-	   fileUpload.setName("uploader");
-	   verticalPanel.add(fileUpload);
+	   FileUpload gbFileUpload = new FileUpload();
+	   gbFileUpload.setName("gbuploader");
+	   verticalPanel.add(gbFileUpload);
+	   
+	   FileUpload txtFileUpload = new FileUpload();
+	   txtFileUpload.setName("txtuploader");
+	   verticalPanel.add(txtFileUpload);
+	   
+	   FileUpload pdbFileUpload = new FileUpload();
+	   pdbFileUpload.setName("pdbuploader");
+	   verticalPanel.add(pdbFileUpload);
 	
 	   verticalPanel.add(new Button("Send file", new ClickHandler() {
 		   public void onClick(ClickEvent event) {

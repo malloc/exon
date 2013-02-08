@@ -42,18 +42,24 @@ public class FilesUploader extends HttpServlet {
 	    	
 	    	return true;
 		}
-		catch(Exception e) {			
+		catch(Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	private HttpServletResponse setResponseMessage(HttpServletResponse response) throws Exception {
+	private HttpServletResponse setResponseMessage(HttpServletResponse response, boolean success) throws Exception {
 					    	
     	response.setContentType("text/html");
     	response.setCharacterEncoding("UTF-8");
 
     	PrintWriter printWriter = response.getWriter(); 
-    	printWriter.write("Plik załadowany pomyślnie"); 
+    	
+    	if(success)
+    		printWriter.write("Plik załadowany pomyślnie");
+    	else
+    		printWriter.write("Błąd podczas ładowania pliku");
+    		
     	printWriter.close();
     	
     	return response;
@@ -63,9 +69,8 @@ public class FilesUploader extends HttpServlet {
 		
         File directory = new File("uploads/" + request.getSession().getId());
         directory.mkdir();
-        File outputFile = new File(directory, name);
-        
-        return outputFile;
+        	
+        return new File(directory, name);
 	}
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -81,10 +86,10 @@ public class FilesUploader extends HttpServlet {
 			
 			while (iter.hasNext()) {
 			    FileItemStream item = iter.next();		        
-		        saveFileOnDisk(getOutputFile(item.getName(), request), item.openStream());
-
-		        //TODO Delevop correct message on fail.
-		        setResponseMessage(response);
+		        if(saveFileOnDisk(getOutputFile(item.getName(), request), item.openStream()))
+		        	setResponseMessage(response, true);
+		        else
+		        	setResponseMessage(response, false);
 			    }
 		}
 		catch(Exception e) {

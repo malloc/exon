@@ -9,15 +9,17 @@ public class AminoAcid implements Serializable {
 	private int position;
 	private String first;
 	private String second;
-	private int exon;
+	private String third;
+	private String exon;
 	
 	public AminoAcid() {	}
 
-	public AminoAcid(int position, String first, String second, int exon) {
+	public AminoAcid(int position, String first, String second, String third, String exon) {
 
 		this.position = position;
 		this.first = first;
 		this.second = second;
+		this.third = third;
 		this.exon = exon;
 	}
 
@@ -33,7 +35,15 @@ public class AminoAcid implements Serializable {
 		return second;
 	}
 
-	public int getExon() {
+	public String getThird() {
+		return third;
+	}
+	
+//	public void setSecond(String second) {
+//		this.second = second;
+//	}
+
+	public String getExon() {
 		return exon;
 	}
 }

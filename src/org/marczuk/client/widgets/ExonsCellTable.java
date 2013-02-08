@@ -34,9 +34,25 @@ public class ExonsCellTable extends CellTable<AminoAcid> {
 			}
 	   };
 	   
+	   TextColumn<AminoAcid> thirdColumn = new TextColumn<AminoAcid>() {
+			@Override
+			public String getValue(AminoAcid object) {
+				return object.getThird();
+			}
+	   };
+	   
+	   TextColumn<AminoAcid> exonColumn = new TextColumn<AminoAcid>() {
+			@Override
+			public String getValue(AminoAcid object) {
+				return object.getExon();
+			}
+	   };
+	   
 	   this.addColumn(indexColumn, "Index");
 	   this.addColumn(firstColumn, "First");
 	   this.addColumn(secondColumn, "Second");
+	   this.addColumn(thirdColumn, "Third");
+	   this.addColumn(exonColumn, "Exon");
 	}
 	
 	public void update(List<AminoAcid> list) {
