@@ -1,6 +1,8 @@
 package org.marczuk.model;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Scanner;
@@ -41,6 +43,18 @@ public class Model {
 		}
 		
 		return aminoAcidData;
+	}
+	
+	public File saveToFile(String fileName, String message) throws Exception {
+		
+		File file = new File(userDirectory, fileName);
+        
+		FileWriter outFile = new FileWriter(file);
+        PrintWriter out = new PrintWriter(outFile);
+        out.println(message);
+        out.close();
+		
+		return file;
 	}
 	
 	private void getIndexes() throws Exception {
@@ -129,10 +143,20 @@ public class Model {
 		return secondLetter;
 	}
  	
-	private File getFile(String extension) {
+	public File getFile(String extension) {
 		
 		for(File file : userDirectory.listFiles()) {
 			if(file.getName().contains("." + extension))
+				return file;
+		}
+		
+		return null;
+	}
+	
+	public File getFile(String fileName, String extension) {
+		
+		for(File file : userDirectory.listFiles()) {
+			if(file.getName().contains(fileName + "." + extension))
 				return file;
 		}
 		

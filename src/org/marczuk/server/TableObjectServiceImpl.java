@@ -13,10 +13,25 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 	@Override
 	public List<AminoAcid> getAminoAcidList() {
 
-		Controller controller = new Controller(this.getThreadLocalRequest().getSession().getId());
+		Controller controller = new Controller(this.getThreadLocalRequest());
 		
 		try {
-			return controller.getAminoList();
+			List<AminoAcid> aminoList = controller.getAminoList();
+			controller.SaveResultToFile();
+			return aminoList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public String getFilePath() {
+
+		Controller controller = new Controller(this.getThreadLocalRequest());
+		
+		try {
+			return controller.getResultFilePath();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

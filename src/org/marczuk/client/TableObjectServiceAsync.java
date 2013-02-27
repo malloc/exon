@@ -9,4 +9,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface TableObjectServiceAsync {
 
 	void getAminoAcidList(AsyncCallback<List<AminoAcid>> callback);
+	void getFilePath(AsyncCallback<String> callback);
 }

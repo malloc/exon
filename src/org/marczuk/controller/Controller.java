@@ -3,12 +3,18 @@ package org.marczuk.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.marczuk.model.Model;
 
 public class Controller {
 
-	public Controller(String sessionID) {
+	public Controller(HttpServletRequest request) {
+		this.sessionID = request.getSession().getId();
 		this.model = new Model(sessionID);
+		this.AppPath = request.getScheme() + "://" 
+				+ request.getServerName() + ":" + request.getServerPort() 
+	            + request.getContextPath() + "/";
 	}
 	
 	public List<AminoAcid> getAminoList() throws Exception {
@@ -34,6 +40,16 @@ public class Controller {
 					));
 	}
 	
+	public void SaveResultToFile() throws Exception {
+		model.saveToFile("result.zip", "Your session ID was: " + sessionID);
+	}
+	
+	public String getResultFilePath() throws Exception {
+		return AppPath + model.getFile("result", "zip").getPath();
+	}
+	
 	private List<AminoAcid> aminoAcidList = null;
+	private String sessionID;
+	private String AppPath;
 	private Model model;
 }

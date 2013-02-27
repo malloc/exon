@@ -80,6 +80,7 @@ public class FilesUploader extends HttpServlet {
 		
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
+		upload.setFileSizeMax(1048576);
 		
 		try {
 			FileItemIterator iter = upload.getItemIterator(request);

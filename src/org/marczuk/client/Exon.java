@@ -10,6 +10,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -27,7 +28,12 @@ public class Exon implements EntryPoint {
 		   public void onClick(ClickEvent event) {
 			   updateCellTable();
 		   }
-	   }));	   
+	   }));
+	   verticalPanel.add(new Button("Pobierz", new ClickHandler() {
+		   public void onClick(ClickEvent event) {
+			   getResultFile();
+		   }
+	   }));	
 	   
 	   RootPanel.get("uploadContainer").add(new UploadFormPanel());
 	   RootPanel.get("tableTest").add(verticalPanel);
@@ -51,5 +57,25 @@ public class Exon implements EntryPoint {
 		};
 		   
 		tableObjectServiceAsync.getAminoAcidList(callback);
+	}
+	
+	private void getResultFile() {
+		
+		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
+		
+		final AsyncCallback<String> callback = new AsyncCallback<String>() {
+			
+			@Override
+			public void onSuccess(String result) {
+				Window.open(result, "_self", null);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		};
+		   
+		tableObjectServiceAsync.getFilePath(callback);
 	}
 }
