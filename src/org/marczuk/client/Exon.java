@@ -2,6 +2,7 @@ package org.marczuk.client;
 
 import java.util.List;
 
+import org.marczuk.client.widgets.AnomalyFlexTable;
 import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.client.widgets.UploadFormPanel;
 import org.marczuk.controller.AminoAcid;
@@ -38,6 +39,7 @@ public class Exon implements EntryPoint {
 	   RootPanel.get("uploadContainer").add(new UploadFormPanel());
 	   RootPanel.get("tableTest").add(verticalPanel);
 	   RootPanel.get("tableTest").add(exonsCellTable);
+	   RootPanel.get("tableTest").add(new AnomalyFlexTable());
 	}
 	
 	private void updateCellTable() {
