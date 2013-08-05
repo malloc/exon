@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +19,6 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
 
 public class FilesUploader extends HttpServlet {
 	
@@ -73,7 +73,7 @@ public class FilesUploader extends HttpServlet {
         return new File(directory, name);
 	}
 
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void service(HttpServletRequest request, HttpServletResponse response) {
 		
 		if(!ServletFileUpload.isMultipartContent(request))
 			return;
@@ -84,14 +84,15 @@ public class FilesUploader extends HttpServlet {
 		
 		try {
 			FileItemIterator iter = upload.getItemIterator(request);
-			
+
 			while (iter.hasNext()) {
 			    FileItemStream item = iter.next();		        
 		        if(saveFileOnDisk(getOutputFile(item.getName(), request), item.openStream()))
 		        	setResponseMessage(response, true);
 		        else
 		        	setResponseMessage(response, false);
-			    }
+			}
+			
 		}
 		catch(Exception e) {
 			e.printStackTrace();

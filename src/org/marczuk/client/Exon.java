@@ -25,18 +25,22 @@ public class Exon implements EntryPoint {
 	public void onModuleLoad() {	   
 	   
 	   VerticalPanel verticalPanel = new VerticalPanel();
-	   verticalPanel.add(new Button("Literki", new ClickHandler() {
+	   
+	   Button startButton = new Button("Literki", new ClickHandler() {
 		   public void onClick(ClickEvent event) {
 			   updateCellTable();
 		   }
-	   }));
+	   });
+	   startButton.setEnabled(false);
+	   verticalPanel.add(startButton);
+	   
 	   verticalPanel.add(new Button("Pobierz", new ClickHandler() {
 		   public void onClick(ClickEvent event) {
 			   getResultFile();
 		   }
 	   }));	
 	   
-	   RootPanel.get("uploadContainer").add(new UploadFormPanel());
+	   RootPanel.get("uploadContainer").add(new UploadFormPanel(startButton));
 	   RootPanel.get("tableTest").add(verticalPanel);
 	   RootPanel.get("tableTest").add(exonsCellTable);
 	   RootPanel.get("tableTest").add(new AnomalyFlexTable());

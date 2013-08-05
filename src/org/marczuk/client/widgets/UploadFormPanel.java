@@ -1,50 +1,95 @@
 package org.marczuk.client.widgets;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class UploadFormPanel extends FormPanel {
+public class UploadFormPanel extends VerticalPanel {
 
-	public UploadFormPanel() {
-
-	   final UploadFormPanel uploadFormPanel = this;
-	   VerticalPanel verticalPanel = new VerticalPanel();
+	public UploadFormPanel(Button associatedButton) {
+		
+		this.associatedButton = associatedButton;
+		
+		this.add(createPanel("pdb"));
+		this.add(createPanel("gb"));
+		this.add(createPanel("txt"));
+	}
 	
-	   this.setMethod(FormPanel.METHOD_POST);
-	   this.setEncoding(FormPanel.ENCODING_MULTIPART);
-	   this.setAction("/filesuploader");
+	private HorizontalPanel createPanel(final String name) {
+		
+		final Label statusLabel = new Label("Upload file: " + name);
+		statusLabel.setStyleName("sendFile");
+		
+		final FormPanel formPanel = new FormPanel();
+		formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.setAction("exon/filesuploader");
+		formPanel.setHeight("10px");
 
-	   this.setWidget(verticalPanel);
-	   
-	   FileUpload gbFileUpload = new FileUpload();
-	   gbFileUpload.setName("gbuploader");
-	   verticalPanel.add(gbFileUpload);
-	   
-	   FileUpload txtFileUpload = new FileUpload();
-	   txtFileUpload.setName("txtuploader");
-	   verticalPanel.add(txtFileUpload);
-	   
-	   FileUpload pdbFileUpload = new FileUpload();
-	   pdbFileUpload.setName("pdbuploader");
-	   verticalPanel.add(pdbFileUpload);
-	
-	   verticalPanel.add(new Button("Send file", new ClickHandler() {
-		   public void onClick(ClickEvent event) {
-			   uploadFormPanel.submit();
-		   }
-	   }));
-	   
-	   this.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+		formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				
-				Window.alert(event.getResults());
+//				if(event.getResults()) {
+					//Zabezpieczenie przed kliknięciem wyślij gdy plik jest już poprawnie załadowany
+					if(!statusLabel.getText().equals("OK")) {
+						statusLabel.setText("OK");
+						statusLabel.setStyleName("fileOk");
+					
+						if(--count == 0) {
+							associatedButton.setEnabled(true);
+						}
+					}
+//				}
 			}
-	   });
+		});
+
+		final Button sendFileButton = new Button("Send file", new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				formPanel.submit();
+			}
+		}); 
+		
+		sendFileButton.setEnabled(false);
+
+		final FileUpload fileUpload = new FileUpload();
+		fileUpload.setName(name);
+		
+		fileUpload.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {				
+				if(fileUpload.getFilename().contains("." + name))
+					sendFileButton.setEnabled(true);
+				else
+					statusLabel.setText("Wrong file. Upload file: " + name);
+			}
+		});
+		
+		formPanel.add(fileUpload);
+		
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
+		horizontalPanel.setSpacing(10);
+		horizontalPanel.add(formPanel);
+		horizontalPanel.add(sendFileButton);
+		horizontalPanel.add(statusLabel);
+		
+		count++;
+		
+		return horizontalPanel;
 	}
+	
+	private static int count;
+	private Button associatedButton;
 }

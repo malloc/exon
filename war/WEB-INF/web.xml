@@ -24,7 +24,7 @@
   
   <servlet-mapping>
     <servlet-name>fileUploaderServlet</servlet-name>
-    <url-pattern>filesuploader</url-pattern>
+    <url-pattern>/exon/filesuploader</url-pattern>
   </servlet-mapping>
  
   <!-- Default page to serve -->
