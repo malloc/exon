@@ -54,6 +54,8 @@ public class ExonsCellTable extends CellTable<AminoAcid> {
 	   this.addColumn(secondColumn, "Second");
 	   this.addColumn(thirdColumn, "Third");
 	   this.addColumn(exonColumn, "Exon");
+	   
+	   this.setStyleName("CSSTableGenerator");
 	}
 	
 	public void update(List<AminoAcid> list) {

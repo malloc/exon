@@ -25,8 +25,10 @@ public class AnomalyFlexTable extends VerticalPanel {
 		flexTable = new FlexTable();
 		
 		flexTable.setText(0, 0, "Position");
-		flexTable.setText(0, 1, "Default letter");
-		flexTable.setText(0, 2, "Changed letter");
+		flexTable.setText(0, 1, "Default");
+		flexTable.setText(0, 2, "Changeds");
+		
+		flexTable.setStyleName("CSSTableGenerator");
 		
 		return flexTable;
 	}
@@ -34,23 +36,22 @@ public class AnomalyFlexTable extends VerticalPanel {
 	private HorizontalPanel getAddNewHorizontalPanel() {
 		HorizontalPanel addNewPanel = new HorizontalPanel();
 		
-		final ListBox positionBox = new ListBox();
+		positionBox = new ListBox();
 		for(int i = 0; i < exonsCellTable.getIndexCount(); i++)
 			positionBox.addItem(String.valueOf(i + 1));
 		
 		positionBox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				defaultLetterBox.setText(exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getThird());
+				setDefaultLetterFromSelection();
 			}
 		});
 		
 		defaultLetterBox = new Label();
-		final TextBox changedLetterBox = new TextBox();
-		if(exonsCellTable.getVisibleItemCount() > 0)
-			defaultLetterBox.setText(exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getThird());
+		changedLetterBox = new TextBox();
+		addButton = new Button("Add new");
+		setDefaultLetterFromSelection();
 		
-		Button addButton = new Button("Add new");
 		addButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -78,11 +79,30 @@ public class AnomalyFlexTable extends VerticalPanel {
 		addNewPanel.add(defaultLetterBox);
 		addNewPanel.add(changedLetterBox);
 		addNewPanel.add(addButton);
+		addNewPanel.setStyleName("CSSTableGenerator");
 		
 		return addNewPanel;
 	}
 	
+	private void setDefaultLetterFromSelection() {
+		if(exonsCellTable.getVisibleItemCount() > 0) {
+			String defaultLetter = exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getThird();
+			defaultLetterBox.setText(defaultLetter);
+			
+			if(defaultLetter.equals(" ")) {
+				changedLetterBox.setEnabled(false);
+				addButton.setEnabled(false);
+			} else {
+				changedLetterBox.setEnabled(true);
+				addButton.setEnabled(true);				
+			}
+		}
+	}
+	
+	private ListBox positionBox;
 	private Label defaultLetterBox;
+	private TextBox changedLetterBox;
+	private Button addButton;
 	private FlexTable flexTable;
 	private ExonsCellTable exonsCellTable;
 }
