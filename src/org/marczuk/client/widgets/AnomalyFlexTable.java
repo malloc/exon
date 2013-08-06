@@ -1,16 +1,22 @@
 package org.marczuk.client.widgets;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AnomalyFlexTable extends VerticalPanel {
 
-	public AnomalyFlexTable() {
+	public AnomalyFlexTable(ExonsCellTable exonsCellTable) {
+		this.exonsCellTable = exonsCellTable;
+
 		this.add(getFlexTable());
 		this.add(getAddNewHorizontalPanel());
 	}
@@ -22,17 +28,27 @@ public class AnomalyFlexTable extends VerticalPanel {
 		flexTable.setText(0, 1, "Default letter");
 		flexTable.setText(0, 2, "Changed letter");
 		
-		System.out.println(flexTable.getText(0, 0));
-		
 		return flexTable;
 	}
 	
 	private HorizontalPanel getAddNewHorizontalPanel() {
 		HorizontalPanel addNewPanel = new HorizontalPanel();
 		
-		final TextBox positionBox = new TextBox();
-		final TextBox defaultLetterBox = new TextBox();
+		final ListBox positionBox = new ListBox();
+		for(int i = 0; i < exonsCellTable.getIndexCount(); i++)
+			positionBox.addItem(String.valueOf(i + 1));
+		
+		positionBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				defaultLetterBox.setText(exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getThird());
+			}
+		});
+		
+		defaultLetterBox = new Label();
 		final TextBox changedLetterBox = new TextBox();
+		if(exonsCellTable.getVisibleItemCount() > 0)
+			defaultLetterBox.setText(exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getThird());
 		
 		Button addButton = new Button("Add new");
 		addButton.addClickHandler(new ClickHandler() {
@@ -41,7 +57,7 @@ public class AnomalyFlexTable extends VerticalPanel {
 				final int row = flexTable.getRowCount();
 				final Button deleteButton = new Button("Delete");
 
-				flexTable.setText(row, 0, positionBox.getText());	
+				flexTable.setText(row, 0, positionBox.getValue(positionBox.getSelectedIndex()));	
 				flexTable.setText(row, 1, defaultLetterBox.getText());
 				flexTable.setText(row, 2, changedLetterBox.getText());
 				flexTable.setWidget(row, 3, deleteButton);
@@ -66,5 +82,7 @@ public class AnomalyFlexTable extends VerticalPanel {
 		return addNewPanel;
 	}
 	
+	private Label defaultLetterBox;
 	private FlexTable flexTable;
+	private ExonsCellTable exonsCellTable;
 }

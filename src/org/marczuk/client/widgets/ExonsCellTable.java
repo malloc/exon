@@ -11,6 +11,7 @@ public class ExonsCellTable extends CellTable<AminoAcid> {
 
 	public ExonsCellTable() {
 	
+	   indexCount = 0;
 	   this.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 	   
 	   TextColumn<AminoAcid> indexColumn = new TextColumn<AminoAcid>() {
@@ -60,5 +61,13 @@ public class ExonsCellTable extends CellTable<AminoAcid> {
        this.setVisibleRange(0, list.size());
 	   this.setRowCount(list.size(), true);
 	   this.setRowData(0, list);
+	   
+	   indexCount = list.size();
 	}
+	
+	public int getIndexCount() {
+		return indexCount;
+	}
+	
+	private int indexCount;
 }

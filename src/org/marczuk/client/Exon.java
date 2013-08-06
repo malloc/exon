@@ -21,13 +21,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class Exon implements EntryPoint {
 	
 	private final ExonsCellTable exonsCellTable = new ExonsCellTable();
+	private AnomalyFlexTable anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 	
 	public void onModuleLoad() {	   
 	   
 	   VerticalPanel verticalPanel = new VerticalPanel();
 	   
-	   Button startButton = new Button("Literki", new ClickHandler() {
+	   Button startButton = new Button("Run", new ClickHandler() {
 		   public void onClick(ClickEvent event) {
+			   RootPanel.get("resultTable").setVisible(true);
 			   updateCellTable();
 		   }
 	   });
@@ -41,9 +43,10 @@ public class Exon implements EntryPoint {
 	   }));	
 	   
 	   RootPanel.get("uploadContainer").add(new UploadFormPanel(startButton));
-	   RootPanel.get("tableTest").add(verticalPanel);
-	   RootPanel.get("tableTest").add(exonsCellTable);
-	   RootPanel.get("tableTest").add(new AnomalyFlexTable());
+	   RootPanel.get("uploadContainer").add(verticalPanel);
+	   
+	   RootPanel.get("resultTable").setVisible(false);
+	   RootPanel.get("resultTable").add(exonsCellTable);
 	}
 	
 	private void updateCellTable() {
@@ -59,6 +62,9 @@ public class Exon implements EntryPoint {
 			@Override
 			public void onSuccess(List<AminoAcid> result) {
 				exonsCellTable.update(result);
+				RootPanel.get("anomalyTable").remove(anomalyFlexTable);
+				anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
+				RootPanel.get("anomalyTable").add(anomalyFlexTable);
 			}
 		};
 		   

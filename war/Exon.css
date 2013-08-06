@@ -42,3 +42,11 @@ h1 {
 	color: green;
 }
 /** End of sending files */
+
+#resultTable {
+	float: left;
+}
+
+#clear {
+	clear: both;
+}
