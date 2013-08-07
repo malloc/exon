@@ -4,5 +4,5 @@ war/WEB-INF/deploy/
 war/exon/
 war/uploads/
 .gwt/
-war/WEB-INF/lib/gwt-servlet.jar
+#war/WEB-INF/lib/gwt-servlet.jar
 test-classes/
