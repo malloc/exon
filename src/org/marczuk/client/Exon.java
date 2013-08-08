@@ -79,7 +79,7 @@ public class Exon implements EntryPoint {
 			
 			@Override
 			public void onSuccess(String result) {
-				Window.open(result, "_self", null);
+				Window.open(result, "_blank", null);
 			}
 			
 			@Override

@@ -41,11 +41,11 @@ public class Controller {
 	}
 	
 	public void SaveResultToFile() throws Exception {
-		model.saveToFile("result.zip", "Your session ID was: " + sessionID);
+		model.saveResultToFile("result.txt", getAminoList());
 	}
 	
 	public String getResultFilePath() throws Exception {
-		return AppPath + model.getFile("result", "zip").getPath();
+		return AppPath + model.getFile("result", "txt").getPath();
 	}
 	
 	private List<AminoAcid> aminoAcidList = null;
