@@ -41,7 +41,7 @@ public class Controller {
 	}
 	
 	public void SaveResultToFile() throws Exception {
-		model.saveToFile("result.txt", "Your session ID was: " + sessionID);
+		model.saveResultToFile("result.txt", getAminoList());
 	}
 	
 	public String getResultFilePath() throws Exception {

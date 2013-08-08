@@ -3,10 +3,15 @@ package org.marczuk.model;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+
+import org.marczuk.controller.AminoAcid;
 
 public class Model {
 
@@ -45,13 +50,22 @@ public class Model {
 		return aminoAcidData;
 	}
 	
-	public File saveToFile(String fileName, String message) throws Exception {
+	public File saveResultToFile(String fileName, List<AminoAcid> aminoAcidList) throws Exception {
 		
 		File file = new File(userDirectory, fileName);
+        String[] color = {"blue", "cyan", "greenblue", "orange", "red", "violet", "yellow", "green", "magenta", "purple", "redorange", "white"};
+        Map<Integer, String> resultMap = new HashMap<Integer, String>();
+        
+        for(AminoAcid aminoAcid : aminoAcidList) {
+        	aminoAcid.getExon();
+        }
         
 		FileWriter outFile = new FileWriter(file);
         PrintWriter out = new PrintWriter(outFile);
-        out.println(message);
+        
+        out.println("load " + getFile("pdb").getName());
+        out.println(userDirectory);
+        
         out.close();
 		
 		return file;
