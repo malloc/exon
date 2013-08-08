@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.marczuk.controller.AminoAcid;
 
@@ -54,17 +55,33 @@ public class Model {
 		
 		File file = new File(userDirectory, fileName);
         String[] color = {"blue", "cyan", "greenblue", "orange", "red", "violet", "yellow", "green", "magenta", "purple", "redorange", "white"};
-        Map<Integer, String> resultMap = new HashMap<Integer, String>();
+        Map<String, String> resultMap = new TreeMap<String, String>();
         
         for(AminoAcid aminoAcid : aminoAcidList) {
-        	aminoAcid.getExon();
+        	String position = resultMap.get(aminoAcid.getExon());
+        	
+        	if(position == null) {
+        		resultMap.put(aminoAcid.getExon(), String.valueOf(aminoAcid.getPosition()));
+        	} else {        		
+        		position += "+" + aminoAcid.getPosition();
+        		resultMap.put(aminoAcid.getExon(), position);
+        	}
         }
         
 		FileWriter outFile = new FileWriter(file);
         PrintWriter out = new PrintWriter(outFile);
         
         out.println("load " + getFile("pdb").getName());
-        out.println(userDirectory);
+        out.println("color white");
+
+        for (String key : resultMap.keySet()) {
+        	if(!key.equals(" ")) {
+        		String name = getFile("pdb").getName().replace(".pdb", "");
+	        	out.print("select exon" + key + ", /" + name + "//A/");
+	        	out.println(resultMap.get(key));
+	        	out.println("color " + color[Integer.parseInt(key)] + ", exon" + key);
+        	}
+        }
         
         out.close();
 		
