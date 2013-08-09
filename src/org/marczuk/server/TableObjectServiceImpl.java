@@ -25,8 +25,8 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 	}
 
 	@Override
-	public String getFilePath() { //TODO To może przyjąć listę z flex table
-
+	public String getFilePath(String test) { //TODO To może przyjąć listę z flex table
+		System.out.println(test);
 		Controller controller = new Controller(this.getThreadLocalRequest());
 		
 		try {

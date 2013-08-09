@@ -12,6 +12,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -88,6 +89,6 @@ public class Exon implements EntryPoint {
 			}
 		};
 		   
-		tableObjectServiceAsync.getFilePath(callback);
+		tableObjectServiceAsync.getFilePath(Navigator.getUserAgent(), callback);
 	}
 }

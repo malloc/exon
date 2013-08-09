@@ -11,5 +11,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface TableObjectService extends RemoteService {
 
 	List<AminoAcid> getAminoAcidList();
-	String getFilePath();
+	String getFilePath(String test);
 }
