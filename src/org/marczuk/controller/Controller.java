@@ -18,7 +18,7 @@ public class Controller {
 	}
 	
 	public List<AminoAcid> getAminoList() throws Exception {
-		
+
 		if(aminoAcidList != null) {
 			return aminoAcidList;
 		}

@@ -17,7 +17,6 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 		
 		try {
 			List<AminoAcid> aminoList = controller.getAminoList();
-			controller.SaveResultToFile();
 			return aminoList;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -26,11 +25,12 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 	}
 
 	@Override
-	public String getFilePath() {
+	public String getFilePath() { //TODO To może przyjąć listę z flex table
 
 		Controller controller = new Controller(this.getThreadLocalRequest());
 		
 		try {
+			controller.SaveResultToFile();
 			return controller.getResultFilePath();
 		} catch (Exception e) {
 			e.printStackTrace();
