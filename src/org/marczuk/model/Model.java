@@ -1,18 +1,22 @@
 package org.marczuk.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.marczuk.controller.AminoAcid;
+import org.marczuk.controller.ChangedAminoAcid;
 
 public class Model {
 
@@ -51,10 +55,10 @@ public class Model {
 		return aminoAcidData;
 	}
 	
-	public File saveResultToFile(String fileName, List<AminoAcid> aminoAcidList) throws Exception {
+	public File saveResultToFile(String fileName, List<AminoAcid> aminoAcidList, List<ChangedAminoAcid> anomalyData) throws Exception {
 		
 		File file = new File(userDirectory, fileName);
-        String[] color = {"blue", "cyan", "greenblue", "orange", "red", "violet", "yellow", "green", "magenta", "purple", "redorange", "white"};
+        String[] color = {"blue", "cyan", "orange", "red", "violet", "yellow", "green", "magenta", "purple", "redorange", "white"};
         Map<String, String> resultMap = new TreeMap<String, String>();
         
         for(AminoAcid aminoAcid : aminoAcidList) {
@@ -74,18 +78,28 @@ public class Model {
         out.println("load " + getFile("pdb").getName());
         out.println("color white");
 
+        String name = getFile("pdb").getName().replace(".pdb", "");
+        
+        //Write exons in file
         for (String key : resultMap.keySet()) {
         	if(!key.equals(" ")) {
-        		String name = getFile("pdb").getName().replace(".pdb", "");
 	        	out.print("select exon" + key + ", /" + name + "//A/");
 	        	out.println(resultMap.get(key));
 	        	out.println("color " + color[Integer.parseInt(key)] + ", exon" + key);
         	}
         }
         
+        //Write anomaly in file
+        for(ChangedAminoAcid changedAminoAcid : anomalyData) {
+        	out.print("select " + changedAminoAcid.getChangedLetter() + ", /" + name + "//A/");
+        	out.println(changedAminoAcid.getPosition());
+        	out.println("color grey, " + changedAminoAcid.getChangedLetter());
+        	out.println("show dots, " + changedAminoAcid.getChangedLetter());
+        }
+        
         out.close();
-		
-		return file;
+
+		return zipFile(file, getFile("pdb"));
 	}
 	
 	private void getIndexes() throws Exception {
@@ -197,6 +211,35 @@ public class Model {
 	private boolean isNumeric(String str) {
 	  
 		return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+	}
+	
+	private File zipFile(File ... files) {		
+		File zipFile = new File(userDirectory , "result.zip");
+       
+		byte[] buffer = new byte[1024];
+       
+		try {
+		FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
+		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+         
+			for (int i = 0; i < files.length; i++) {
+				FileInputStream fileInputStream = new FileInputStream(files[i]);
+				zipOutputStream.putNextEntry(new ZipEntry(files[i].getName()));
+				int length;
+	
+				while((length = fileInputStream.read(buffer)) > 0) {
+					zipOutputStream.write(buffer, 0, length);
+				}
+	
+				zipOutputStream.closeEntry();
+				fileInputStream.close();
+			}
+			zipOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return zipFile;
 	}
 	
 	private File userDirectory;

@@ -40,12 +40,12 @@ public class Controller {
 					));
 	}
 	
-	public void SaveResultToFile() throws Exception {
-		model.saveResultToFile("result.txt", getAminoList());
+	public void SaveResultToFile(List<ChangedAminoAcid> anomalyData) throws Exception {
+		model.saveResultToFile("script.pml", getAminoList(), anomalyData);
 	}
 	
 	public String getResultFilePath() throws Exception {
-		return AppPath + model.getFile("result", "txt").getPath();
+		return AppPath + model.getFile("result", "zip").getPath();
 	}
 	
 	private List<AminoAcid> aminoAcidList = null;

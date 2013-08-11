@@ -1,5 +1,10 @@
 package org.marczuk.client.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.marczuk.controller.ChangedAminoAcid;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,6 +24,18 @@ public class AnomalyFlexTable extends VerticalPanel {
 
 		this.add(getFlexTable());
 		this.add(getAddNewHorizontalPanel());
+	}
+	
+	public List<ChangedAminoAcid> getData() {
+		List<ChangedAminoAcid> list = new ArrayList<ChangedAminoAcid>();
+		
+		for (int i = 1; i < flexTable.getRowCount(); i++) {
+			list.add(new ChangedAminoAcid(Integer.parseInt(flexTable.getHTML(i, 0)), 
+					flexTable.getHTML(i, 1), 
+					flexTable.getHTML(i, 2)));
+		}
+		
+		return list;
 	}
 	
 	private FlexTable getFlexTable() {

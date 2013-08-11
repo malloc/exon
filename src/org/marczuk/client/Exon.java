@@ -89,6 +89,6 @@ public class Exon implements EntryPoint {
 			}
 		};
 		   
-		tableObjectServiceAsync.getFilePath(Navigator.getUserAgent(), callback);
+		tableObjectServiceAsync.getFilePath(anomalyFlexTable.getData(), callback);
 	}
 }

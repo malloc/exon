@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.marczuk.client.TableObjectService;
 import org.marczuk.controller.AminoAcid;
+import org.marczuk.controller.ChangedAminoAcid;
 import org.marczuk.controller.Controller;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -25,12 +26,12 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 	}
 
 	@Override
-	public String getFilePath(String test) { //TODO To może przyjąć listę z flex table
-		System.out.println(test);
+	public String getFilePath(List<ChangedAminoAcid> anomalyData) {
+
 		Controller controller = new Controller(this.getThreadLocalRequest());
 		
 		try {
-			controller.SaveResultToFile();
+			controller.SaveResultToFile(anomalyData);
 			return controller.getResultFilePath();
 		} catch (Exception e) {
 			e.printStackTrace();
