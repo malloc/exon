@@ -12,7 +12,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -21,33 +20,35 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Exon implements EntryPoint {
 	
-	private final ExonsCellTable exonsCellTable = new ExonsCellTable();
+	private ExonsCellTable exonsCellTable = new ExonsCellTable();
 	private AnomalyFlexTable anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 	
-	public void onModuleLoad() {	   
+	public void onModuleLoad() {
+		VerticalPanel verticalPanel = new VerticalPanel();
 	   
-	   VerticalPanel verticalPanel = new VerticalPanel();
+		Button startButton = new Button("Run", new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				RootPanel.get("resultTable").setVisible(true);
+				updateCellTable();
+			}
+		});
+		startButton.setEnabled(false);
+		verticalPanel.add(startButton);
 	   
-	   Button startButton = new Button("Run", new ClickHandler() {
-		   public void onClick(ClickEvent event) {
-			   RootPanel.get("resultTable").setVisible(true);
-			   updateCellTable();
-		   }
-	   });
-	   startButton.setEnabled(false);
-	   verticalPanel.add(startButton);
+		verticalPanel.add(new Button("Pobierz", new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				getResultFile();
+			}
+		}));	
+		
+		//If something is in session
+		restoreExonsCellTable();
+		
+		RootPanel.get("uploadContainer").add(new UploadFormPanel(startButton));
+		RootPanel.get("uploadContainer").add(verticalPanel);
 	   
-	   verticalPanel.add(new Button("Pobierz", new ClickHandler() {
-		   public void onClick(ClickEvent event) {
-			   getResultFile();
-		   }
-	   }));	
-	   
-	   RootPanel.get("uploadContainer").add(new UploadFormPanel(startButton));
-	   RootPanel.get("uploadContainer").add(verticalPanel);
-	   
-	   RootPanel.get("resultTable").setVisible(false);
-	   RootPanel.get("resultTable").add(exonsCellTable);
+//		RootPanel.get("resultTable").setVisible(false);
+		RootPanel.get("resultTable").add(exonsCellTable);
 	}
 	
 	private void updateCellTable() {
@@ -66,6 +67,8 @@ public class Exon implements EntryPoint {
 				RootPanel.get("anomalyTable").remove(anomalyFlexTable);
 				anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 				RootPanel.get("anomalyTable").add(anomalyFlexTable);
+				
+				saveExonsCellTable(result);
 			}
 		};
 		   
@@ -90,5 +93,47 @@ public class Exon implements EntryPoint {
 		};
 		   
 		tableObjectServiceAsync.getFilePath(anomalyFlexTable.getData(), callback);
+	}
+	
+	private void saveExonsCellTable(List<AminoAcid> aminoAcidList) {
+		
+		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
+		
+		final AsyncCallback<Boolean> callback = new AsyncCallback<Boolean>() {
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		};
+		   
+		tableObjectServiceAsync.setAminoAcidListToSession(aminoAcidList, callback);
+	}
+	
+	private void restoreExonsCellTable() {
+		
+		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
+		
+		final AsyncCallback<List<AminoAcid>> callback = new AsyncCallback<List<AminoAcid>>() {
+			
+			@Override
+			public void onSuccess(List<AminoAcid> result) {
+				if(result != null) {
+					exonsCellTable.update(result);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		};
+		   
+		tableObjectServiceAsync.getAminoAcidListFromSession(callback);
 	}
 }

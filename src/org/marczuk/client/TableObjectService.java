@@ -2,6 +2,7 @@ package org.marczuk.client;
 
 import java.util.List;
 
+import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.controller.AminoAcid;
 import org.marczuk.controller.ChangedAminoAcid;
 
@@ -13,4 +14,6 @@ public interface TableObjectService extends RemoteService {
 
 	List<AminoAcid> getAminoAcidList();
 	String getFilePath(List<ChangedAminoAcid> anomalyData);
+	List<AminoAcid> getAminoAcidListFromSession();
+	Boolean setAminoAcidListToSession(List<AminoAcid> aminoAcidList);
 }

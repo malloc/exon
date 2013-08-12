@@ -2,6 +2,7 @@ package org.marczuk.client;
 
 import java.util.List;
 
+import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.controller.AminoAcid;
 import org.marczuk.controller.ChangedAminoAcid;
 
@@ -11,4 +12,6 @@ public interface TableObjectServiceAsync {
 
 	void getAminoAcidList(AsyncCallback<List<AminoAcid>> callback);
 	void getFilePath(List<ChangedAminoAcid> anomalyData, AsyncCallback<String> callback);
+	void getAminoAcidListFromSession(AsyncCallback<List<AminoAcid>> callback);
+	void setAminoAcidListToSession(List<AminoAcid> aminoAcidList, AsyncCallback<Boolean> callback);
 }

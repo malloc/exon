@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.apache.commons.io.FileUtils;
 
+import com.google.gwt.user.client.Window;
+
 public class SessionListener implements HttpSessionListener {
 
     @Override
@@ -15,6 +17,7 @@ public class SessionListener implements HttpSessionListener {
  
     public void sessionDestroyed(HttpSessionEvent event) {
 
+    	System.out.println(Window.getTitle());
         System.out.println("Session Destroyed: " + event.getSession().getId());
         
         try {
