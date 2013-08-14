@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.model.Model;
 
 public class Controller {
@@ -46,7 +45,7 @@ public class Controller {
 	@SuppressWarnings("unchecked")
 	public List<AminoAcid> restoreAminoAcidListFromSession() {
 		return (List<AminoAcid>) httpSession.getAttribute("amino");
-	}	
+	}
 	
 	private void fillAminoAcidList() throws Exception {
 		String[] aminoAcidData = model.getAminoAcidData();

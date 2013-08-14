@@ -11,6 +11,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -28,7 +29,6 @@ public class Exon implements EntryPoint {
 	   
 		Button startButton = new Button("Run", new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				RootPanel.get("resultTable").setVisible(true);
 				updateCellTable();
 			}
 		});
@@ -47,8 +47,18 @@ public class Exon implements EntryPoint {
 		RootPanel.get("uploadContainer").add(new UploadFormPanel(startButton));
 		RootPanel.get("uploadContainer").add(verticalPanel);
 	   
-//		RootPanel.get("resultTable").setVisible(false);
+		RootPanel.get("resultTable").setVisible(false);
 		RootPanel.get("resultTable").add(exonsCellTable);
+		
+		Timer timer = new Timer() {
+			@Override
+			public void run() {
+				refreshPage();
+			}
+		};
+		
+		timer.scheduleRepeating(1000 * 60 * 3); //Wyślij żadanie co 3 minuty
+		timer.run();
 	}
 	
 	private void updateCellTable() {
@@ -64,6 +74,7 @@ public class Exon implements EntryPoint {
 			@Override
 			public void onSuccess(List<AminoAcid> result) {
 				exonsCellTable.update(result);
+				RootPanel.get("resultTable").setVisible(true);
 				RootPanel.get("anomalyTable").remove(anomalyFlexTable);
 				anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 				RootPanel.get("anomalyTable").add(anomalyFlexTable);
@@ -125,6 +136,10 @@ public class Exon implements EntryPoint {
 			public void onSuccess(List<AminoAcid> result) {
 				if(result != null) {
 					exonsCellTable.update(result);
+					RootPanel.get("resultTable").setVisible(true);
+					RootPanel.get("anomalyTable").remove(anomalyFlexTable);
+					anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
+					RootPanel.get("anomalyTable").add(anomalyFlexTable);
 				}
 			}
 			
@@ -135,5 +150,23 @@ public class Exon implements EntryPoint {
 		};
 		   
 		tableObjectServiceAsync.getAminoAcidListFromSession(callback);
+	}
+	
+	private void refreshPage() {
+		
+		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
+		
+		final AsyncCallback<Boolean> callback = new AsyncCallback<Boolean>() {
+			
+			@Override
+			public void onSuccess(Boolean result) {	}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		};
+		   
+		tableObjectServiceAsync.keepSessionAlive(callback);
 	}
 }

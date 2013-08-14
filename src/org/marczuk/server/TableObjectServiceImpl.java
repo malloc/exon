@@ -3,7 +3,6 @@ package org.marczuk.server;
 import java.util.List;
 
 import org.marczuk.client.TableObjectService;
-import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.controller.AminoAcid;
 import org.marczuk.controller.ChangedAminoAcid;
 import org.marczuk.controller.Controller;
@@ -12,6 +11,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class TableObjectServiceImpl extends RemoteServiceServlet implements TableObjectService {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public List<AminoAcid> getAminoAcidList() {
 
@@ -56,4 +57,7 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 		
 		return null;
 	}
+
+	@Override
+	public void keepSessionAlive() {	}
 }

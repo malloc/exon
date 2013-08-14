@@ -17,7 +17,6 @@ public class SessionListener implements HttpSessionListener {
  
     public void sessionDestroyed(HttpSessionEvent event) {
 
-    	System.out.println(Window.getTitle());
         System.out.println("Session Destroyed: " + event.getSession().getId());
         
         try {

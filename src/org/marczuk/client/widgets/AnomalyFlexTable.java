@@ -38,6 +38,12 @@ public class AnomalyFlexTable extends VerticalPanel {
 		return list;
 	}
 	
+	public void setData(List<ChangedAminoAcid> list) {
+		for(ChangedAminoAcid acid : list) {
+			addChangedLetter(String.valueOf(acid.getPosition()), acid.getDefaultLetter(), acid.getChangedLetter());
+		}
+	}
+	
 	private FlexTable getFlexTable() {
 		flexTable = new FlexTable();
 		
@@ -72,23 +78,8 @@ public class AnomalyFlexTable extends VerticalPanel {
 		addButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				final int row = flexTable.getRowCount();
-				final Button deleteButton = new Button("Delete");
-
-				flexTable.setText(row, 0, positionBox.getValue(positionBox.getSelectedIndex()));	
-				flexTable.setText(row, 1, defaultLetterBox.getText());
-				flexTable.setText(row, 2, changedLetterBox.getText());
-				flexTable.setWidget(row, 3, deleteButton);
-				
-				deleteButton.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						for(int i = 1; i < flexTable.getRowCount(); i++) {
-							if(flexTable.getWidget(i, 3).hashCode() == deleteButton.hashCode())
-								flexTable.removeRow(i);
-						}
-					}
-				});
+				addChangedLetter(positionBox.getValue(positionBox.getSelectedIndex()), 
+						defaultLetterBox.getText(), changedLetterBox.getText());
 			}
 		});
 		
@@ -114,6 +105,26 @@ public class AnomalyFlexTable extends VerticalPanel {
 				addButton.setEnabled(true);				
 			}
 		}
+	}
+	
+	private void addChangedLetter(String position, String defaultLetter, String changedLetter) {
+		final int row = flexTable.getRowCount();
+		final Button deleteButton = new Button("Delete");
+	
+		flexTable.setText(row, 0, position);	
+		flexTable.setText(row, 1, defaultLetter);
+		flexTable.setText(row, 2, changedLetter);
+		flexTable.setWidget(row, 3, deleteButton);
+		
+		deleteButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				for(int i = 1; i < flexTable.getRowCount(); i++) {
+					if(flexTable.getWidget(i, 3).hashCode() == deleteButton.hashCode())
+						flexTable.removeRow(i);
+				}
+			}
+		});
 	}
 	
 	private ListBox positionBox;
