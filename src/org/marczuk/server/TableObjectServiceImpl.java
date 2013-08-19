@@ -6,6 +6,7 @@ import org.marczuk.client.TableObjectService;
 import org.marczuk.controller.AminoAcid;
 import org.marczuk.controller.ChangedAminoAcid;
 import org.marczuk.controller.Controller;
+import org.marczuk.controller.DataSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -42,7 +43,7 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 	}
 
 	@Override
-	public List<AminoAcid> getAminoAcidListFromSession() {
+	public DataSession getAminoAcidListFromSession() {
 		
 		Controller controller = new Controller(this.getThreadLocalRequest());
 		
@@ -54,6 +55,15 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 
 		Controller controller = new Controller(this.getThreadLocalRequest());
 		controller.saveAminoAcidListToSession(aminoAcidList);
+		
+		return null;
+	}
+	
+	@Override
+	public Boolean setChangedAminoAcidListToSession(List<ChangedAminoAcid> changedAminoAcids) {
+
+		Controller controller = new Controller(this.getThreadLocalRequest());
+		controller.saveChangedAminoAcidListToSession(changedAminoAcids);
 		
 		return null;
 	}

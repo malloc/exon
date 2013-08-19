@@ -39,12 +39,22 @@ public class Controller {
 	}
 	
 	public void saveAminoAcidListToSession(List<AminoAcid> aminoAcidList) {
-		httpSession.setAttribute("amino", aminoAcidList);
+		DataSession dataSession = new DataSession();
+		dataSession.setAminoAcidList(aminoAcidList);
+		
+		httpSession.setAttribute("amino", dataSession);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<AminoAcid> restoreAminoAcidListFromSession() {
-		return (List<AminoAcid>) httpSession.getAttribute("amino");
+	public void saveChangedAminoAcidListToSession(List<ChangedAminoAcid> aminoAcidList) {
+		//Get from session because this method is call after saveAminoAcidListToSession
+		DataSession dataSession = (DataSession) httpSession.getAttribute("amino");
+		dataSession.setChangedAminoAcidList(aminoAcidList);
+		
+		httpSession.setAttribute("amino", dataSession);
+	}
+	
+	public DataSession restoreAminoAcidListFromSession() {
+		return (DataSession) httpSession.getAttribute("amino");
 	}
 	
 	private void fillAminoAcidList() throws Exception {

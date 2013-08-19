@@ -3,12 +3,16 @@ package org.marczuk.client.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.marczuk.client.TableObjectService;
+import org.marczuk.client.TableObjectServiceAsync;
 import org.marczuk.controller.ChangedAminoAcid;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -80,6 +84,8 @@ public class AnomalyFlexTable extends VerticalPanel {
 			public void onClick(ClickEvent event) {
 				addChangedLetter(positionBox.getValue(positionBox.getSelectedIndex()), 
 						defaultLetterBox.getText(), changedLetterBox.getText());
+				
+				saveChangedAminoAcidTable(getData());
 			}
 		});
 		
@@ -123,8 +129,29 @@ public class AnomalyFlexTable extends VerticalPanel {
 					if(flexTable.getWidget(i, 3).hashCode() == deleteButton.hashCode())
 						flexTable.removeRow(i);
 				}
+				saveChangedAminoAcidTable(getData());
 			}
 		});
+	}
+	
+	private void saveChangedAminoAcidTable(List<ChangedAminoAcid> aminoAcidList) {
+		
+		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
+		
+		final AsyncCallback<Boolean> callback = new AsyncCallback<Boolean>() {
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		};
+		   
+		tableObjectServiceAsync.setChangedAminoAcidListToSession(aminoAcidList, callback);
 	}
 	
 	private ListBox positionBox;

@@ -6,6 +6,8 @@ import org.marczuk.client.widgets.AnomalyFlexTable;
 import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.client.widgets.UploadFormPanel;
 import org.marczuk.controller.AminoAcid;
+import org.marczuk.controller.ChangedAminoAcid;
+import org.marczuk.controller.DataSession;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -130,15 +132,16 @@ public class Exon implements EntryPoint {
 		
 		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
 		
-		final AsyncCallback<List<AminoAcid>> callback = new AsyncCallback<List<AminoAcid>>() {
+		final AsyncCallback<DataSession> callback = new AsyncCallback<DataSession>() {
 			
 			@Override
-			public void onSuccess(List<AminoAcid> result) {
+			public void onSuccess(DataSession result) {
 				if(result != null) {
-					exonsCellTable.update(result);
+					exonsCellTable.update(result.getAminoAcidList());
 					RootPanel.get("resultTable").setVisible(true);
 					RootPanel.get("anomalyTable").remove(anomalyFlexTable);
 					anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
+					anomalyFlexTable.setData(result.getChangedAminoAcidList());
 					RootPanel.get("anomalyTable").add(anomalyFlexTable);
 				}
 			}
