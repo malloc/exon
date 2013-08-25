@@ -43,19 +43,23 @@ public class AnomalyFlexTable extends VerticalPanel {
 	}
 	
 	public void setData(List<ChangedAminoAcid> list) {
-		for(ChangedAminoAcid acid : list) {
-			addChangedLetter(String.valueOf(acid.getPosition()), acid.getDefaultLetter(), acid.getChangedLetter());
+		if(list != null) {
+			for(ChangedAminoAcid acid : list) {
+				addChangedLetter(String.valueOf(acid.getPosition()), acid.getDefaultLetter(), acid.getChangedLetter());
+			}
+			setFlexTableVisibility();
 		}
 	}
 	
 	private FlexTable getFlexTable() {
 		flexTable = new FlexTable();
 		
-		flexTable.setText(0, 0, "Position");
+		flexTable.setText(0, 0, "Index");
 		flexTable.setText(0, 1, "Default");
-		flexTable.setText(0, 2, "Changeds");
+		flexTable.setText(0, 2, "Changed");
 		
 		flexTable.setStyleName("CSSTableGenerator");
+		setFlexTableVisibility();
 		
 		return flexTable;
 	}
@@ -76,6 +80,8 @@ public class AnomalyFlexTable extends VerticalPanel {
 		
 		defaultLetterBox = new Label();
 		changedLetterBox = new TextBox();
+		changedLetterBox.getElement().setAttribute("maxlength", "1");
+		changedLetterBox.setWidth("62px");
 		addButton = new Button("Add new");
 		setDefaultLetterFromSelection();
 		
@@ -83,9 +89,14 @@ public class AnomalyFlexTable extends VerticalPanel {
 			@Override
 			public void onClick(ClickEvent event) {
 				addChangedLetter(positionBox.getValue(positionBox.getSelectedIndex()), 
-						defaultLetterBox.getText(), changedLetterBox.getText());
+						defaultLetterBox.getText(), changedLetterBox.getText().toUpperCase());
+				
+				positionBox.setSelectedIndex(0);
+				setDefaultLetterFromSelection();
+				changedLetterBox.setText("");
 				
 				saveChangedAminoAcidTable(getData());
+				setFlexTableVisibility();
 			}
 		});
 		
@@ -100,7 +111,7 @@ public class AnomalyFlexTable extends VerticalPanel {
 	
 	private void setDefaultLetterFromSelection() {
 		if(exonsCellTable.getVisibleItemCount() > 0) {
-			String defaultLetter = exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getThird();
+			String defaultLetter = exonsCellTable.getVisibleItem(positionBox.getSelectedIndex()).getFirst();
 			defaultLetterBox.setText(defaultLetter);
 			
 			if(defaultLetter.equals(" ")) {
@@ -130,8 +141,16 @@ public class AnomalyFlexTable extends VerticalPanel {
 						flexTable.removeRow(i);
 				}
 				saveChangedAminoAcidTable(getData());
+				setFlexTableVisibility();
 			}
 		});
+	}
+	
+	private void setFlexTableVisibility() {
+		if(flexTable.getRowCount() != 1)
+			flexTable.setVisible(true);
+		else
+			flexTable.setVisible(false);
 	}
 	
 	private void saveChangedAminoAcidTable(List<ChangedAminoAcid> aminoAcidList) {

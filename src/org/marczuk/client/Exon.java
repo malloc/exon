@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.marczuk.client.widgets.AnomalyFlexTable;
 import org.marczuk.client.widgets.ExonsCellTable;
+import org.marczuk.client.widgets.Menu;
+import org.marczuk.client.widgets.SaveAndRestoreFormPanel;
 import org.marczuk.client.widgets.UploadFormPanel;
+import org.marczuk.client.widgets.UploadTabLayoutPanel;
 import org.marczuk.controller.AminoAcid;
-import org.marczuk.controller.ChangedAminoAcid;
 import org.marczuk.controller.DataSession;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -27,15 +29,15 @@ public class Exon implements EntryPoint {
 	private AnomalyFlexTable anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 	
 	public void onModuleLoad() {
+		
+		RootPanel.get("menu").add(new Menu());
 		VerticalPanel verticalPanel = new VerticalPanel();
 	   
-		Button startButton = new Button("Run", new ClickHandler() {
+		ClickHandler runClickHandler = new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				updateCellTable();
 			}
-		});
-		startButton.setEnabled(false);
-		verticalPanel.add(startButton);
+		};
 	   
 		verticalPanel.add(new Button("Pobierz", new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -46,7 +48,11 @@ public class Exon implements EntryPoint {
 		//If something is in session
 		restoreExonsCellTable();
 		
-		RootPanel.get("uploadContainer").add(new UploadFormPanel(startButton));
+		UploadTabLayoutPanel uploadTabLayoutPanel = new UploadTabLayoutPanel();
+		uploadTabLayoutPanel.add(new UploadFormPanel(runClickHandler), "New project");
+		uploadTabLayoutPanel.add(new SaveAndRestoreFormPanel(runClickHandler), "Save or restore project");
+		
+		RootPanel.get("uploadContainer").add(uploadTabLayoutPanel);
 		RootPanel.get("uploadContainer").add(verticalPanel);
 	   
 		RootPanel.get("resultTable").setVisible(false);

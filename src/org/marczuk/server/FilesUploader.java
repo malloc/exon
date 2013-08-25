@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 
 public class FilesUploader extends HttpServlet {
 	
@@ -27,7 +28,18 @@ public class FilesUploader extends HttpServlet {
 	private boolean saveFileOnDisk(File fileToSave, InputStream inputStream) {
 		
 		try {
-	        OutputStream out = new FileOutputStream(fileToSave);
+			//Jeżeli istnieje plik z tym samym rozszerzeniem
+			File directory = new File(fileToSave.getAbsolutePath()
+					.replace(fileToSave.getName(), ""));
+			
+			for(File file : directory.listFiles()) {
+				if(FilenameUtils.getExtension(fileToSave.getName())
+						.equals(FilenameUtils.getExtension(file.getName()))) {
+					file.delete();
+				}
+			}
+			
+	        OutputStream out = new FileOutputStream(fileToSave);	        
 	        
 	    	int read = 0;
 	    	byte[] bytes = new byte[1024];
