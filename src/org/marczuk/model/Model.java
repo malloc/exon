@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,8 +17,11 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.http.HttpSession;
+
 import org.marczuk.controller.AminoAcid;
 import org.marczuk.controller.ChangedAminoAcid;
+import org.marczuk.controller.DataSession;
 
 public class Model {
 
@@ -100,6 +105,41 @@ public class Model {
         out.close();
 
 		return zipFile(file, getFile("pdb"));
+	}
+	
+	public File saveSessionToFile(DataSession dataSession) {
+		
+		try {
+			File outputFile = new File(userDirectory, "save.snp");
+			FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream (fileOutputStream);
+			objectOutputStream.writeObject(dataSession);
+			
+			return getFile("snp");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public Boolean restoreSessionFromFile(HttpSession httpSession) {
+		
+		try {
+			FileInputStream fileInputStream = new FileInputStream(getFile("snp"));
+			ObjectInputStream objectInputStream = new ObjectInputStream (fileInputStream);
+
+			DataSession dataSession = (DataSession) objectInputStream.readObject();
+			
+			httpSession.setAttribute("amino", dataSession);
+			
+			return true;
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	private void getIndexes() throws Exception {

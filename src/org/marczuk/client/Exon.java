@@ -38,6 +38,12 @@ public class Exon implements EntryPoint {
 				updateCellTable();
 			}
 		};
+		
+		ClickHandler runFromSavedSessionClickHandler = new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				restoreSessionFromUploadedFile();
+			}
+		};
 	   
 		verticalPanel.add(new Button("Pobierz", new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -50,7 +56,7 @@ public class Exon implements EntryPoint {
 		
 		UploadTabLayoutPanel uploadTabLayoutPanel = new UploadTabLayoutPanel();
 		uploadTabLayoutPanel.add(new UploadFormPanel(runClickHandler), "New project");
-		uploadTabLayoutPanel.add(new SaveAndRestoreFormPanel(runClickHandler), "Save or restore project");
+		uploadTabLayoutPanel.add(new SaveAndRestoreFormPanel(runFromSavedSessionClickHandler), "Save or restore project");
 		
 		RootPanel.get("uploadContainer").add(uploadTabLayoutPanel);
 		RootPanel.get("uploadContainer").add(verticalPanel);
@@ -159,6 +165,26 @@ public class Exon implements EntryPoint {
 		};
 		   
 		tableObjectServiceAsync.getAminoAcidListFromSession(callback);
+	}
+	
+	private void restoreSessionFromUploadedFile() {
+		
+		TableObjectServiceAsync tableObjectServiceAsync = GWT.create(TableObjectService.class);
+		
+		final AsyncCallback<Boolean> callback = new AsyncCallback<Boolean>() {
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				restoreExonsCellTable();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+		};
+		   
+		tableObjectServiceAsync.restoreSessionFromUploadedFile(callback);
 	}
 	
 	private void refreshPage() {

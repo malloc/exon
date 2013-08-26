@@ -8,6 +8,7 @@ import org.marczuk.controller.ChangedAminoAcid;
 import org.marczuk.controller.Controller;
 import org.marczuk.controller.DataSession;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class TableObjectServiceImpl extends RemoteServiceServlet implements TableObjectService {
@@ -41,6 +42,14 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 			return null;
 		}
 	}
+	
+	@Override
+	public String getSavedSessionPath() {
+		
+		Controller controller = new Controller(this.getThreadLocalRequest());
+		
+		return controller.saveSessionToFile();
+	}
 
 	@Override
 	public DataSession getAminoAcidListFromSession() {
@@ -66,6 +75,14 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 		controller.saveChangedAminoAcidListToSession(changedAminoAcids);
 		
 		return null;
+	}
+	
+	@Override
+	public Boolean restoreSessionFromUploadedFile() {
+
+		Controller controller = new Controller(this.getThreadLocalRequest());
+		
+		return controller.restoreSessionFromFile();
 	}
 
 	@Override

@@ -14,8 +14,10 @@ public interface TableObjectService extends RemoteService {
 
 	List<AminoAcid> getAminoAcidList();
 	String getFilePath(List<ChangedAminoAcid> anomalyData);
+	String getSavedSessionPath();
 	DataSession getAminoAcidListFromSession();
 	Boolean setAminoAcidListToSession(List<AminoAcid> aminoAcidList);
 	Boolean setChangedAminoAcidListToSession(List<ChangedAminoAcid> changedAminoAcids);
+	Boolean restoreSessionFromUploadedFile();
 	void keepSessionAlive();
 }

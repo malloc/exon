@@ -2,6 +2,7 @@ package org.marczuk.client.widgets;
 
 import org.marczuk.client.TableObjectService;
 import org.marczuk.client.TableObjectServiceAsync;
+import org.marczuk.controller.DataSession;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,7 +20,7 @@ public class SaveAndRestoreFormPanel extends VerticalPanel {
 		VerticalPanel restoreVerticalPanel = new VerticalPanel();
 		FileUploadWidgetFactory widgetFactory = new FileUploadWidgetFactory(clickHandler);
 		
-		restoreVerticalPanel.add(widgetFactory.createUploadPanel("pdb"));		
+		restoreVerticalPanel.add(widgetFactory.createUploadPanel("snp"));		
 		restoreVerticalPanel.add(widgetFactory.getRunButton());
 		
 		restoreDecoratorPanel.add(restoreVerticalPanel);
@@ -51,7 +52,6 @@ public class SaveAndRestoreFormPanel extends VerticalPanel {
 			}
 		};
 		
-		//TODO Dodać poprawną ścieżkę do pliku
-//		tableObjectServiceAsync.getFilePath(anomalyFlexTable.getData(), callback);
+		tableObjectServiceAsync.getSavedSessionPath(callback);
 	}
 }

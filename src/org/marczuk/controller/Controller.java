@@ -45,6 +45,12 @@ public class Controller {
 		httpSession.setAttribute("amino", dataSession);
 	}
 	
+	public String saveSessionToFile() {
+		DataSession dataSession = (DataSession) httpSession.getAttribute("amino");
+		
+		return AppPath + model.saveSessionToFile(dataSession).getPath();
+	}
+	
 	public void saveChangedAminoAcidListToSession(List<ChangedAminoAcid> aminoAcidList) {
 		//Get from session because this method is call after saveAminoAcidListToSession
 		DataSession dataSession = (DataSession) httpSession.getAttribute("amino");
@@ -54,7 +60,13 @@ public class Controller {
 	}
 	
 	public DataSession restoreAminoAcidListFromSession() {
+		
 		return (DataSession) httpSession.getAttribute("amino");
+	}
+	
+	public Boolean restoreSessionFromFile() {
+		
+		return model.restoreSessionFromFile(httpSession);
 	}
 	
 	private void fillAminoAcidList() throws Exception {

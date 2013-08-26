@@ -12,9 +12,11 @@ public interface TableObjectServiceAsync {
 
 	void getAminoAcidList(AsyncCallback<List<AminoAcid>> callback);
 	void getFilePath(List<ChangedAminoAcid> anomalyData, AsyncCallback<String> callback);
+	void getSavedSessionPath(AsyncCallback<String> callback);
 	void getAminoAcidListFromSession(AsyncCallback<DataSession> callback);
 	void setAminoAcidListToSession(List<AminoAcid> aminoAcidList, AsyncCallback<Boolean> callback);
 	void setChangedAminoAcidListToSession(List<ChangedAminoAcid> changedAminoAcids, AsyncCallback<Boolean> callback);
+	void restoreSessionFromUploadedFile(AsyncCallback<Boolean> callback);
 	@SuppressWarnings("rawtypes")
 	void keepSessionAlive(AsyncCallback callback);
 }
