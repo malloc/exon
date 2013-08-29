@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -66,6 +67,7 @@ public class AnomalyFlexTable extends VerticalPanel {
 	
 	private HorizontalPanel getAddNewHorizontalPanel() {
 		HorizontalPanel addNewPanel = new HorizontalPanel();
+		addNewPanel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
 		
 		positionBox = new ListBox();
 		for(int i = 0; i < exonsCellTable.getIndexCount(); i++)

@@ -32,5 +32,7 @@ public class Menu extends MenuBar {
 				htmlContainer.setVisible(true);
 			}
 		}));
+		
+		this.addStyleName("menu");
 	}
 }

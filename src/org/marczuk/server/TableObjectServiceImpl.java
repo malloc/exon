@@ -35,7 +35,7 @@ public class TableObjectServiceImpl extends RemoteServiceServlet implements Tabl
 		Controller controller = new Controller(this.getThreadLocalRequest());
 		
 		try {
-			controller.SaveResultToFile(anomalyData);
+			controller.SaveResultToFile();
 			return controller.getResultFilePath();
 		} catch (Exception e) {
 			e.printStackTrace();

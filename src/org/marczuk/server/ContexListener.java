@@ -17,8 +17,9 @@ public class ContexListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         try {
-			FileUtils.deleteDirectory(new File("uploads"));
-			new File("uploads").mkdir();
+        	String realPath = servletContextEvent.getServletContext().getRealPath("/");
+			FileUtils.deleteDirectory(new File(realPath + "/uploads"));
+			new File(realPath + "/uploads").mkdir();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

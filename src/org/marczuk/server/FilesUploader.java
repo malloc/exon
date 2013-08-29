@@ -20,13 +20,14 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
+import org.marczuk.model.Model;
 
 public class FilesUploader extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private boolean saveFileOnDisk(File fileToSave, InputStream inputStream) {
-		
+
 		try {
 			//Jeżeli istnieje plik z tym samym rozszerzeniem
 			File directory = new File(fileToSave.getAbsolutePath()
@@ -79,7 +80,7 @@ public class FilesUploader extends HttpServlet {
 	
 	private File getOutputFile(String name, HttpServletRequest request) {
 		
-        File directory = new File("uploads/" + request.getSession().getId());
+        File directory = new File(this.getServletContext().getRealPath("/") + "/uploads/" + request.getSession().getId());
         directory.mkdir();
         	
         return new File(directory, name);

@@ -23,6 +23,24 @@ public class DataSession implements Serializable {
 		this.aminoAcidList = aminoAcidList;
 	}
 	
+	public String getPdbName() {
+		return pdbName;
+	}
+
+	public void setPdbName(String pdbName) {
+		this.pdbName = pdbName;
+	}
+
+	public String getPdbContent() {
+		return pdbContent;
+	}
+
+	public void setPdbContent(String pdbContent) {
+		this.pdbContent = pdbContent;
+	}
+
 	private List<ChangedAminoAcid> changedAminoAcidList;
 	private List<AminoAcid> aminoAcidList;
+	private String pdbName;
+	private String pdbContent;
 }

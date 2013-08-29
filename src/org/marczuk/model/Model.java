@@ -2,12 +2,14 @@ package org.marczuk.model;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +19,21 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.marczuk.controller.AminoAcid;
 import org.marczuk.controller.ChangedAminoAcid;
 import org.marczuk.controller.DataSession;
 
+import com.google.web.bindery.requestfactory.server.RequestFactoryServlet;
+
 public class Model {
 
-	public Model(String sessionID) {
-		userDirectory = new File("uploads/" + sessionID);
+	public Model(String sessionID, String realPath) {
+		userDirectory = new File(realPath + "/uploads/" + sessionID);
 	}
 	
 	public String[] getAminoAcidData() throws Exception {
@@ -60,9 +67,10 @@ public class Model {
 		return aminoAcidData;
 	}
 	
-	public File saveResultToFile(String fileName, List<AminoAcid> aminoAcidList, List<ChangedAminoAcid> anomalyData) throws Exception {
+	public File saveResultToFile(List<AminoAcid> aminoAcidList, List<ChangedAminoAcid> anomalyData) throws Exception {
 		
-		File file = new File(userDirectory, fileName);
+		File scriptFile = new File(userDirectory, "script.pml");
+		File csvFile = new File(userDirectory, "snp.csv");
         String[] color = {"blue", "cyan", "orange", "red", "violet", "yellow", "green", "magenta", "purple", "redorange", "white"};
         Map<String, String> resultMap = new TreeMap<String, String>();
         
@@ -77,7 +85,8 @@ public class Model {
         	}
         }
         
-		FileWriter outFile = new FileWriter(file);
+        //Write script into file
+		FileWriter outFile = new FileWriter(scriptFile);
         PrintWriter out = new PrintWriter(outFile);
         
         out.println("load " + getFile("pdb").getName());
@@ -95,20 +104,66 @@ public class Model {
         }
         
         //Write anomaly in file
-        for(ChangedAminoAcid changedAminoAcid : anomalyData) {
-        	out.print("select " + changedAminoAcid.getChangedLetter() + ", /" + name + "//A/");
-        	out.println(changedAminoAcid.getPosition());
-        	out.println("color grey, " + changedAminoAcid.getChangedLetter());
-        	out.println("show dots, " + changedAminoAcid.getChangedLetter());
+        if(anomalyData != null) {
+	        for(ChangedAminoAcid changedAminoAcid : anomalyData) {
+	        	String changeTitle = changedAminoAcid.getDefaultLetter() + " -> " 
+	        			+ changedAminoAcid.getChangedLetter() 
+	        			+ " [" + changedAminoAcid.getPosition() + "]";
+	        			
+	        	out.print("select " + changeTitle + ", /" + name + "//A/");
+	        	out.println(changedAminoAcid.getPosition());
+	        	out.println("color grey, " + changeTitle);
+	        	out.println("show dots, " + changeTitle);
+	        }
         }
         
         out.close();
+        
+        //Write csv file
+		FileWriter outcsvFile = new FileWriter(csvFile);
+        PrintWriter outcsv = new PrintWriter(outcsvFile);
+        
+        outcsv.println("\"Index\", \"Seq (CDS)\", \"Seq (pdb)\", \"2D\", \"Exon number\", \"Change\"");
+        
+        for(AminoAcid aminoAcid : aminoAcidList) {
+        	
+        	String change = " ";
+        	if(anomalyData != null) {
+	        	for(ChangedAminoAcid changedAminoAcid : anomalyData) {
+	        		if(changedAminoAcid.getPosition() == aminoAcid.getPosition())
+	        			change = changedAminoAcid.getChangedLetter();
+	        	}
+        	}
+        	
+        	outcsv.println("\"" + aminoAcid.getPosition() + "\", \"" + 
+        			aminoAcid.getFirst() + "\", \"" +
+        			aminoAcid.getSecond() + "\", \"" +
+        			aminoAcid.getThird() + "\", \"" +
+        			aminoAcid.getExon() + "\", \"" +
+        			change + "\"");
+        }
+        
+        outcsv.close();
 
-		return zipFile(file, getFile("pdb"));
+		return zipFile(scriptFile, csvFile, getFile("pdb"));
 	}
 	
 	public File saveSessionToFile(DataSession dataSession) {
 		
+		//Dodaj zawartość pliku pdb do save'a
+		try {
+			Scanner scanner = new Scanner(getFile("pdb"));
+			StringBuilder content = new StringBuilder();
+			while(scanner.hasNext()) {
+				content.append(scanner.nextLine() + "\n");
+			}
+			dataSession.setPdbContent(content.toString());
+			dataSession.setPdbName(getFile("pdb").getName());
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		//Właściwe tworzenie save'a
 		try {
 			File outputFile = new File(userDirectory, "save.snp");
 			FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
@@ -125,6 +180,7 @@ public class Model {
 	
 	public Boolean restoreSessionFromFile(HttpSession httpSession) {
 		
+		//Właściwe przywracanie sesji
 		try {
 			FileInputStream fileInputStream = new FileInputStream(getFile("snp"));
 			ObjectInputStream objectInputStream = new ObjectInputStream (fileInputStream);
@@ -132,6 +188,13 @@ public class Model {
 			DataSession dataSession = (DataSession) objectInputStream.readObject();
 			
 			httpSession.setAttribute("amino", dataSession);
+			
+			//Przywracanie pliku pdb
+			File pdbFile = new File(userDirectory, dataSession.getPdbName());
+			FileWriter fileWriter = new FileWriter(pdbFile);
+	        PrintWriter printWriter = new PrintWriter(fileWriter);
+	        printWriter.print(dataSession.getPdbContent());
+	        printWriter.close();
 			
 			return true;
 
@@ -142,6 +205,10 @@ public class Model {
 		return false;
 	}
 	
+	public File getUserDirectory() {
+		return userDirectory;
+	}
+
 	private void getIndexes() throws Exception {
 		
 		File pdbFile = getFile("pdb");

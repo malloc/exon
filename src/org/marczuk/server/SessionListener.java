@@ -20,7 +20,8 @@ public class SessionListener implements HttpSessionListener {
         System.out.println("Session Destroyed: " + event.getSession().getId());
         
         try {
-			FileUtils.deleteDirectory(new File("uploads/" + event.getSession().getId()));
+        	String realPath = event.getSession().getServletContext().getRealPath("/");
+			FileUtils.deleteDirectory(new File(realPath + "/uploads/" + event.getSession().getId()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

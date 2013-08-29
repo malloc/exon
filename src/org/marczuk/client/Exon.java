@@ -3,6 +3,7 @@ package org.marczuk.client;
 import java.util.List;
 
 import org.marczuk.client.widgets.AnomalyFlexTable;
+import org.marczuk.client.widgets.DownloadPanel;
 import org.marczuk.client.widgets.ExonsCellTable;
 import org.marczuk.client.widgets.Menu;
 import org.marczuk.client.widgets.SaveAndRestoreFormPanel;
@@ -18,7 +19,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -35,21 +35,27 @@ public class Exon implements EntryPoint {
 	   
 		ClickHandler runClickHandler = new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				RootPanel.get("resultTable").setVisible(true);
 				updateCellTable();
 			}
 		};
 		
 		ClickHandler runFromSavedSessionClickHandler = new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				RootPanel.get("resultTable").setVisible(true);
 				restoreSessionFromUploadedFile();
 			}
 		};
-	   
-		verticalPanel.add(new Button("Pobierz", new ClickHandler() {
+
+		ClickHandler downloadResultClickHandler = new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				getResultFile();
 			}
-		}));	
+		};
+		
+		RootPanel.get("download").setVisible(false);
+		RootPanel.get("download").add(new DownloadPanel(downloadResultClickHandler));
 		
 		//If something is in session
 		restoreExonsCellTable();
@@ -88,8 +94,8 @@ public class Exon implements EntryPoint {
 			@Override
 			public void onSuccess(List<AminoAcid> result) {
 				exonsCellTable.update(result);
-				RootPanel.get("resultTable").setVisible(true);
-				RootPanel.get("anomalyTable").remove(anomalyFlexTable);
+				RootPanel.get("download").setVisible(true);
+				RootPanel.get("anomalyTable").clear();
 				anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 				RootPanel.get("anomalyTable").add(anomalyFlexTable);
 				
@@ -150,8 +156,8 @@ public class Exon implements EntryPoint {
 			public void onSuccess(DataSession result) {
 				if(result != null) {
 					exonsCellTable.update(result.getAminoAcidList());
-					RootPanel.get("resultTable").setVisible(true);
-					RootPanel.get("anomalyTable").remove(anomalyFlexTable);
+					RootPanel.get("download").setVisible(true);
+					RootPanel.get("anomalyTable").clear();
 					anomalyFlexTable = new AnomalyFlexTable(exonsCellTable);
 					anomalyFlexTable.setData(result.getChangedAminoAcidList());
 					RootPanel.get("anomalyTable").add(anomalyFlexTable);

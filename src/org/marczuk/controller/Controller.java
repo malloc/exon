@@ -6,14 +6,17 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.marczuk.model.Model;
+
+import com.google.web.bindery.requestfactory.server.RequestFactoryServlet;
 
 public class Controller {
 
 	public Controller(HttpServletRequest request) {
 		this.httpSession = request.getSession();
 		this.sessionID = request.getSession().getId();
-		this.model = new Model(sessionID);
+		this.model = new Model(sessionID, request.getSession().getServletContext().getRealPath("/"));
 		this.AppPath = request.getScheme() + "://" 
 				+ request.getServerName() + ":" + request.getServerPort() 
 	            + request.getContextPath() + "/";
@@ -30,12 +33,14 @@ public class Controller {
 		}
 	}
 	
-	public void SaveResultToFile(List<ChangedAminoAcid> anomalyData) throws Exception {
-		model.saveResultToFile("script.pml", getAminoList(), anomalyData);
+	public void SaveResultToFile() throws Exception {
+		DataSession dataSession = (DataSession) httpSession.getAttribute("amino");
+		model.saveResultToFile(dataSession.getAminoAcidList(), dataSession.getChangedAminoAcidList());
 	}
 	
 	public String getResultFilePath() throws Exception {
-		return AppPath + model.getFile("result", "zip").getPath();
+		
+		return convertPathToUrl(model.getFile("result", "zip").getPath());
 	}
 	
 	public void saveAminoAcidListToSession(List<AminoAcid> aminoAcidList) {
@@ -48,7 +53,7 @@ public class Controller {
 	public String saveSessionToFile() {
 		DataSession dataSession = (DataSession) httpSession.getAttribute("amino");
 		
-		return AppPath + model.saveSessionToFile(dataSession).getPath();
+		return convertPathToUrl(model.saveSessionToFile(dataSession).getPath());
 	}
 	
 	public void saveChangedAminoAcidListToSession(List<ChangedAminoAcid> aminoAcidList) {
@@ -79,6 +84,13 @@ public class Controller {
 					, aminoAcidData[2].substring(i, i + 1)
 					, aminoAcidData[3].substring(i, i + 1)
 					));
+	}
+	
+	private String convertPathToUrl(String path) {
+		path = path.substring(path.indexOf("uploads"), path.length());
+		path = AppPath + path;
+		
+		return FilenameUtils.separatorsToUnix(path);
 	}
 	
 	private List<AminoAcid> aminoAcidList = null;

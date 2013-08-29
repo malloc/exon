@@ -3,11 +3,25 @@
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
-  font-size: 2em;
-  font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
+  margin: 35px 0px 10px;
   text-align: center;
+  color: grey;
+  text-shadow: 0px 1px 0px #999, 0px 1px 0px #888, 0px 1px 0px #777, 0px 1px 0px #666, 0px 1px 0px #555, 0px 1px 0px #444, 0px 1px 0px #333, 0px 1px 1px #001135;
+  font: 35px 'ChunkFiveRegular';
+}
+
+h3 {
+  color: #C0C0C0;
+  margin: 10px 0px 70px;
+  text-align: center;	
+}
+
+html {
+	background: #E0E0E0;
+}
+
+#background {
+	background: #E0E0E0;
 }
 
 .sendButton {
@@ -43,12 +57,35 @@ h1 {
 }
 /** End of sending files */
 
+.downloadPanel td {
+    padding-right: 25px;
+}
+
+#menu {
+	margin-top: -15px;
+	margin-bottom: 30px;
+}
+
 #resultTable {
 	float: left;
+	margin-left: -20px;
 }
 
 #clear {
 	clear: both;
+}
+
+#container {
+	width: 85%;
+	overflow:auto; 
+	padding: 30px;
+	margin: 0 auto;
+	border: 1px solid #CCCCCC;
+	background: #FFF;
+}
+
+#download {
+	margin-top: 9px; 
 }
 
 /** tables */
@@ -103,7 +140,7 @@ h1 {
 	border-left: 0;
 }
 .CSSTableGenerator td {
-	padding:18px;
+	padding: 6px 18px;
 	border-top: 1px solid #ffffff;
 	border-bottom:1px solid #e0e0e0;
 	border-left: 1px solid #e0e0e0;
